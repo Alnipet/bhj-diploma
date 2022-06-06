@@ -10,6 +10,18 @@ class RegisterForm extends AsyncForm {
    * и закрывает окно, в котором находится форма
    * */
   onSubmit(data) {
+    User.register(data, (err, response) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      if (response && response.user) {
+        const modalRegister = App.getModal('register');
 
+        App.setState('user-logged');
+        this.element.reset();
+        modalRegister.close();
+      }
+    });
   }
 }
