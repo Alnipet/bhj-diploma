@@ -25,20 +25,17 @@ class CreateTransactionForm extends AsyncForm {
           return;
         }
         if (response.data) {
-          const selectExpenseAccount = document.getElementById('expense-accounts-list');
-          const selectIncomeAccount = document.getElementById('income-accounts-list');
-          selectExpenseAccount.innerHTML = null;
-          selectIncomeAccount.innerHTML = null;
+          const selectAccount = this.element.account_id;
 
-          for (let item of response.data) {
-            selectExpenseAccount.innerHTML += `
-            <option value="${item.id}">${item.name}</option>
+          const accountListHTML = response.data.reduce((sumString, current) => {
+            sumString += `
+            <option value="${current.id}">${current.name}</option>
             `;
 
-            selectIncomeAccount.innerHTML += `
-            <option value="${item.id}">${item.name}</option>
-            `;
-          }
+            return sumString;
+          }, '');
+
+          selectAccount.innerHTML = accountListHTML;
         }
       });
     }
@@ -58,14 +55,17 @@ class CreateTransactionForm extends AsyncForm {
       }
 
       if (response && response.success) {
+        let typeTransactionForm;
+
         if (this.element.id === 'new-income-form') {
-          const modalNewIncome = App.getModal('newIncome');
-          modalNewIncome.close();
+          typeTransactionForm = 'newIncome';
         } else if (this.element.id === 'new-expense-form') {
-          const modalNewExpense = App.getModal('newExpense');
-          modalNewExpense.close();
+          typeTransactionForm = 'newExpense';
         }
 
+        const modalNewTransaction = App.getModal(typeTransactionForm);
+
+        modalNewTransaction.close();
         this.element.reset();
         App.update();
       }

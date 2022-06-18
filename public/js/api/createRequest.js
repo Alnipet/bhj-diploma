@@ -6,13 +6,10 @@
 const createRequest = (options = {}) => {
   const xhr = new XMLHttpRequest();
 
-  const url = options.url ? new URL(options.url, 'http://localhost:8000/') : false;
-  const method = options.method;
-  const callback = options.callback;
-  const data = options.data;
+  const url = options.url ? new URL(options.url, location.origin) : false;
+  const { method, callback, data } = options;
 
   const formData = new FormData();
-
 
   if (!url && !method && !callback) {
     console.error('Не хватате данных для запроса');
@@ -51,17 +48,10 @@ const createRequest = (options = {}) => {
   }
 
   xhr.addEventListener('load', () => {
-    if (xhr.status === 200) {
-      if (xhr.response.success) {
-        callback(null, xhr.response);
-      } else {
-        callback(xhr.response.error);
-      }
+    if (xhr.response.success) {
+      callback(null, xhr.response);
     } else {
-      callback(xhr.status, xhr.response);
+      callback(xhr.response.error);
     }
   });
 };
-
-/* Рефакторинг обязательно!!! */
-/* Функция createRequest ничего не возвращает - сказано в задании*/

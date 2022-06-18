@@ -11,15 +11,11 @@ class TransactionsPage {
    * через registerEvents()
    * */
   constructor(element) {
-    try {
-      if (!element) {
-        throw new Error('Элемент не существует');
-      }
-      this.element = element;
-      this.registerEvents();
-    } catch (error) {
-      console.error(error);
+    if (!element) {
+      throw new Error('Элемент не существует');
     }
+    this.element = element;
+    this.registerEvents();
   }
 
   /**
@@ -221,9 +217,11 @@ class TransactionsPage {
    * используя getTransactionHTML
    * */
   renderTransactions(data) {
-    document.querySelector('.content').innerHTML = null;
-    for (let item of data) {
-      document.querySelector('.content').innerHTML += this.getTransactionHTML(item);
-    }
+    const transactionListHTML = data.reduce((sumString, current) => {
+      sumString += this.getTransactionHTML(current);
+      return sumString;
+    }, '');
+
+    document.querySelector('.content').innerHTML = transactionListHTML;
   }
 }

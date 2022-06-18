@@ -13,15 +13,11 @@ class AsyncForm {
    * через registerEvents()
    * */
   constructor(element) {
-    try {
-      if (!element) {
-        throw new Error('Элемент не существует');
-      }
-      this.element = element;
-      this.registerEvents();
-    } catch (error) {
-      console.error(error);
+    if (!element) {
+      throw new Error('Элемент не существует');
     }
+    this.element = element;
+    this.registerEvents();
   }
 
   /**
@@ -30,9 +26,7 @@ class AsyncForm {
    * */
   registerEvents() {
     const sendButton = Array.from(this.element.elements).find((elem) => {
-      if (elem.className === 'btn btn-primary') {
-        return true;
-      }
+      return elem.className === 'btn btn-primary';
     });
 
     sendButton.addEventListener('click', (e) => {
